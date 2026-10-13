@@ -7,3 +7,17 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Usuario {
+  id              String   @id @default(uuid())
+  nome            String
+  email           String   @unique
+  dataNascimento  DateTime @map("data_nascimento") @db.Date
+  senhaHash       String   @map("senha_hash")
+  termosAceitosEm DateTime @map("termos_aceitos_em")
+
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  @@map("usuarios")
+}
