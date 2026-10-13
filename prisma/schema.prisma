@@ -16,8 +16,38 @@ model Usuario {
   senhaHash       String   @map("senha_hash")
   termosAceitosEm DateTime @map("termos_aceitos_em")
 
+  fasesConcluidas FaseConcluida[]
+  respostasQuiz   RespostaQuiz[]
+
   criadoEm     DateTime @default(now()) @map("criado_em")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
 
   @@map("usuarios")
+}
+
+model FaseConcluida {
+  id          String   @id @default(uuid())
+  usuarioId   String   @map("usuario_id")
+  fase        Int
+  xpGanho     Int      @map("xp_ganho")
+  concluidaEm DateTime @default(now()) @map("concluida_em")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, fase])
+  @@map("fases_concluidas")
+}
+
+model RespostaQuiz {
+  id           String   @id @default(uuid())
+  usuarioId    String   @map("usuario_id")
+  fase         Int
+  cardId       String   @map("card_id")
+  acertou      Boolean
+  respondidaEm DateTime @updatedAt @map("respondida_em")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, fase, cardId])
+  @@map("respostas_quiz")
 }
