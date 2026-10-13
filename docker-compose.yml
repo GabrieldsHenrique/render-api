@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: render-db
+    environment:
+      POSTGRES_USER: render
+      POSTGRES_PASSWORD: render
+      POSTGRES_DB: render
+    ports:
+      - "5432:5432"
+    volumes:
+      - render-data:/var/lib/postgresql/data
+
+volumes:
+  render-data:
