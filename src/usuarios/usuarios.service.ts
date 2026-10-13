@@ -13,6 +13,14 @@ export class UsuariosService {
     });
   }
 
+  async marcarBoasVindasVista(id: string) {
+    await this.prisma.usuario.updateMany({
+      where: { id, boasVindasVistaEm: null },
+      data: { boasVindasVistaEm: new Date() },
+    });
+    return this.buscarPorId(id);
+  }
+
   buscarPorEmail(email: string) {
     return this.prisma.usuario.findUnique({ where: { email } });
   }

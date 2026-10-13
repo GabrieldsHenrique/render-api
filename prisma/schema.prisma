@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Usuario {
-  id              String   @id @default(uuid())
-  nome            String
-  email           String   @unique
-  dataNascimento  DateTime @map("data_nascimento") @db.Date
-  senhaHash       String   @map("senha_hash")
-  termosAceitosEm DateTime @map("termos_aceitos_em")
+  id                String    @id @default(uuid())
+  nome              String
+  email             String    @unique
+  dataNascimento    DateTime  @map("data_nascimento") @db.Date
+  senhaHash         String    @map("senha_hash")
+  termosAceitosEm   DateTime  @map("termos_aceitos_em")
+  boasVindasVistaEm DateTime? @map("boas_vindas_vista_em")
 
   fasesConcluidas FaseConcluida[]
   respostasQuiz   RespostaQuiz[]

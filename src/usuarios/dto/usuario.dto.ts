@@ -18,6 +18,14 @@ export class UsuarioDto {
   })
   termosAceitosEm: Date;
 
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description:
+      'Quando viu o modal de boas-vindas pela primeira vez. null = ainda não viu',
+  })
+  boasVindasVistaEm: Date | null;
+
   criadoEm: Date;
 
   atualizadoEm: Date;
