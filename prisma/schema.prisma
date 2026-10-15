@@ -19,6 +19,8 @@ model Usuario {
 
   fasesConcluidas FaseConcluida[]
   respostasQuiz   RespostaQuiz[]
+  orcamentos      Orcamento[]
+  lancamentos     Lancamento[]
 
   criadoEm     DateTime @default(now()) @map("criado_em")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
@@ -51,4 +53,50 @@ model RespostaQuiz {
 
   @@unique([usuarioId, fase, cardId])
   @@map("respostas_quiz")
+}
+
+model Orcamento {
+  id        String  @id @default(uuid())
+  usuarioId String  @map("usuario_id")
+  mes       String  @db.VarChar(7)
+  renda     Decimal @db.Decimal(12, 2)
+
+  usuario    Usuario              @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  categorias OrcamentoCategoria[]
+
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  @@unique([usuarioId, mes])
+  @@map("orcamentos")
+}
+
+model OrcamentoCategoria {
+  id          String  @id @default(uuid())
+  orcamentoId String  @map("orcamento_id")
+  categoria   String
+  valor       Decimal @db.Decimal(12, 2)
+
+  orcamento Orcamento @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
+
+  @@unique([orcamentoId, categoria])
+  @@map("orcamento_categorias")
+}
+
+model Lancamento {
+  id         String   @id @default(uuid())
+  usuarioId  String   @map("usuario_id")
+  categoria  String
+  descricao  String   @default("")
+  valorTotal Decimal  @map("valor_total") @db.Decimal(12, 2)
+  parcelas   Int      @default(1)
+  data       DateTime @db.Date
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  @@index([usuarioId, data])
+  @@map("lancamentos")
 }
