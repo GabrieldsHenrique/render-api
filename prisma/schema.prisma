@@ -100,3 +100,12 @@ model Lancamento {
   @@index([usuarioId, data])
   @@map("lancamentos")
 }
+
+model Indicador {
+  codigo     String   @id
+  valor      Decimal  @db.Decimal(7, 4)
+  referencia DateTime @db.Date
+  buscadoEm  DateTime @map("buscado_em")
+
+  @@map("indicadores")
+}
