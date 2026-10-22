@@ -7,12 +7,15 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Matches,
   Max,
   MaxLength,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import {
+  CATEGORIA_METAS,
   CATEGORIAS_ORCAMENTO,
   type CategoriaOrcamento,
   DESCRICAO_MAXIMA,
@@ -30,12 +33,22 @@ export class FiltroLancamentosDto {
 
 export class CriarLancamentoDto {
   @ApiProperty({
-    description: 'Id da categoria (lista fixa do front)',
+    description:
+      'Id da categoria (lista fixa do front). metas = dinheiro guardado para uma meta do planejador',
     enum: CATEGORIAS_ORCAMENTO,
     example: 'compras',
   })
   @IsIn(CATEGORIAS_ORCAMENTO, { message: 'Categoria inexistente' })
   categoria: CategoriaOrcamento;
+
+  @ApiPropertyOptional({
+    description:
+      'Só na categoria metas (obrigatório nela): id da meta para a qual o dinheiro foi guardado',
+    example: '3f1c2a9e-7b1d-4c55-9a0e-2a7d5f0c1b11',
+  })
+  @ValidateIf((dto: CriarLancamentoDto) => dto.categoria === CATEGORIA_METAS)
+  @IsUUID('all', { message: 'Escolha a meta' })
+  metaId?: string;
 
   @ApiProperty({
     description:
@@ -89,6 +102,15 @@ export class LancamentoDto {
 
   @ApiProperty({ enum: CATEGORIAS_ORCAMENTO, example: 'compras' })
   categoria: CategoriaOrcamento;
+
+  @ApiProperty({
+    description:
+      'Categoria metas: a meta do dinheiro guardado (null se a meta foi excluída). Outras categorias: null',
+    nullable: true,
+    type: String,
+    example: null,
+  })
+  metaId: string | null;
 
   @ApiProperty({ example: 'Notebook' })
   descricao: string;

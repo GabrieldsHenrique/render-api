@@ -12,9 +12,12 @@ export const CATEGORIAS_ORCAMENTO = [
   'reserva',
   'investimentos',
   'dividas',
+  'metas',
 ] as const;
 
 export type CategoriaOrcamento = (typeof CATEGORIAS_ORCAMENTO)[number];
+
+export const CATEGORIA_METAS = 'metas';
 
 export const TRILHA_DA_PLANILHA = 1;
 

@@ -26,7 +26,8 @@ export class MesDto {
 
 export class ValorCategoriaDto {
   @ApiProperty({
-    description: 'Id da categoria (lista fixa do front)',
+    description:
+      'Id da categoria (lista fixa do front). metas = o quanto o mês separa para as metas do planejador',
     enum: CATEGORIAS_ORCAMENTO,
     example: 'moradia',
   })

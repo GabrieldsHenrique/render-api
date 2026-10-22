@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CriarLancamentoDto, LancamentoDto } from './dto/lancamento.dto';
 import { OrcamentoDto, SalvarOrcamentoDto } from './dto/orcamento.dto';
 import {
+  CATEGORIA_METAS,
   CategoriaOrcamento,
   hoje,
   inicioDoMes,
@@ -119,6 +120,22 @@ export class PlanilhaService {
       throw new BadRequestException('A data do gasto não pode ser no futuro');
     }
 
+    const paraMeta = dto.categoria === CATEGORIA_METAS;
+    if (paraMeta) {
+      if ((dto.parcelas ?? 1) > 1) {
+        throw new BadRequestException(
+          'Dinheiro guardado para uma meta não tem parcelas',
+        );
+      }
+      const meta = await this.prisma.meta.findFirst({
+        where: { id: dto.metaId, usuarioId },
+        select: { id: true },
+      });
+      if (!meta) {
+        throw new BadRequestException('Meta inexistente');
+      }
+    }
+
     const lancamento = await this.prisma.lancamento.create({
       data: {
         usuarioId,
@@ -127,6 +144,7 @@ export class PlanilhaService {
         valorTotal: dto.valorTotal,
         parcelas: dto.parcelas ?? 1,
         data: paraData(dto.data),
+        metaId: paraMeta ? dto.metaId : null,
       },
     });
     return this.lancamentoParaDto(lancamento, 1);
@@ -150,6 +168,7 @@ export class PlanilhaService {
     return {
       id: lancamento.id,
       categoria: lancamento.categoria as CategoriaOrcamento,
+      metaId: lancamento.metaId,
       descricao: lancamento.descricao,
       data: paraTexto(lancamento.data),
       valorTotal,

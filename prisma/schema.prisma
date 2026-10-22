@@ -27,6 +27,7 @@ model Usuario {
   respostasQuiz   RespostaQuiz[]
   orcamentos      Orcamento[]
   lancamentos     Lancamento[]
+  metas           Meta[]
 
   criadoEm     DateTime @default(now()) @map("criado_em")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
@@ -97,14 +98,39 @@ model Lancamento {
   valorTotal Decimal  @map("valor_total") @db.Decimal(12, 2)
   parcelas   Int      @default(1)
   data       DateTime @db.Date
+  metaId     String?  @map("meta_id")
 
   usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  meta    Meta?   @relation(fields: [metaId], references: [id], onDelete: SetNull)
 
   criadoEm     DateTime @default(now()) @map("criado_em")
   atualizadoEm DateTime @updatedAt @map("atualizado_em")
 
   @@index([usuarioId, data])
+  @@index([metaId])
   @@map("lancamentos")
+}
+
+model Meta {
+  id             String   @id @default(uuid())
+  usuarioId      String   @map("usuario_id")
+  tipo           String
+  nome           String
+  icone          String
+  jaTem          Decimal  @default(0) @map("ja_tem") @db.Decimal(12, 2)
+  valor          Decimal? @db.Decimal(12, 2)
+  mes            String?  @db.VarChar(7)
+  rendaMensal    Decimal? @map("renda_mensal") @db.Decimal(12, 2)
+  idadeAposentar Int?     @map("idade_aposentar")
+
+  usuario     Usuario      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  lancamentos Lancamento[]
+
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  @@index([usuarioId])
+  @@map("metas")
 }
 
 model Indicador {

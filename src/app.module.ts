@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { IndicadoresModule } from './indicadores/indicadores.module';
+import { MetasModule } from './metas/metas.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PlanilhaModule } from './planilha/planilha.module';
 import { ProgressoModule } from './progresso/progresso.module';
@@ -16,6 +17,7 @@ import { ProgressoModule } from './progresso/progresso.module';
     ProgressoModule,
     PlanilhaModule,
     IndicadoresModule,
+    MetasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
