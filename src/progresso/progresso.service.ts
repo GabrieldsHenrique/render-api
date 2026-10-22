@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { Prisma } from '../generated/prisma/client';
+import { Papel, Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RespostaQuizDto } from './dto/concluir-fase.dto';
 import { FiltroErrosDto } from './dto/filtro-erros.dto';
@@ -13,7 +13,13 @@ import {
   ProgressoDto,
   ResultadoConclusaoDto,
 } from './dto/progresso.dto';
-import { FASE_MAXIMA, trilhaDaFase, trilhaPorId, xpDaFase } from './jornada';
+import {
+  FASE_MAXIMA,
+  trilhaDaFase,
+  trilhaPorId,
+  XP_JORNADA_COMPLETA,
+  xpDaFase,
+} from './jornada';
 
 @Injectable()
 export class ProgressoService {
@@ -124,6 +130,14 @@ export class ProgressoService {
     db: Prisma.TransactionClient,
     usuarioId: string,
   ): Promise<ProgressoDto> {
+    const usuario = await db.usuario.findUnique({
+      where: { id: usuarioId },
+      select: { papel: true },
+    });
+    if (usuario?.papel === Papel.ADMIN) {
+      return { xp: XP_JORNADA_COMPLETA, faseAtual: FASE_MAXIMA + 1 };
+    }
+
     const resumo = await db.faseConcluida.aggregate({
       where: { usuarioId },
       _sum: { xpGanho: true },

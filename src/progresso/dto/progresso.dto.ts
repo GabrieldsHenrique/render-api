@@ -9,7 +9,7 @@ export class ProgressoDto {
 
   @ApiProperty({
     description:
-      'Fase em andamento (= quantidade de fases concluídas). 101 quando a jornada termina',
+      'Fase em andamento (= quantidade de fases concluídas). 100 quando a jornada termina (fases de 0 a 99) — e sempre 100 para admin, que tem tudo liberado',
     example: 3,
   })
   faseAtual: number;

@@ -8,6 +8,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Papel {
+  ALUNO
+  ADMIN
+}
+
 model Usuario {
   id                String    @id @default(uuid())
   nome              String
@@ -16,6 +21,7 @@ model Usuario {
   senhaHash         String    @map("senha_hash")
   termosAceitosEm   DateTime  @map("termos_aceitos_em")
   boasVindasVistaEm DateTime? @map("boas_vindas_vista_em")
+  papel             Papel     @default(ALUNO)
 
   fasesConcluidas FaseConcluida[]
   respostasQuiz   RespostaQuiz[]
